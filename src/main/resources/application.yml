@@ -1,0 +1,19 @@
+spring:
+  main:
+    web-application-type: none
+  application:
+    name: chat-crawler
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_HOST:localhost:27020/chat-crawler}
+      username: ${MONGO_USERNAME:admin}
+      password: ${MONGO_PASSWORD:password}
+
+tristar:
+  chat:
+    schedule:
+      rate: 5000
+    providers:
+      telegram:
+        url: https://api.telegram.org
+        token: 8006509352:AAGYD10GtCHKzGOXh4K6Si8yTOEsQbzbOoI

@@ -1,0 +1,14 @@
+version: "3.2"
+services:
+
+  mongoDB:
+    container_name: chat-mongo-db
+    image: mongo:4.4.6
+    platform: linux/x86_64
+    ports:
+      - 27020:27017
+    networks:
+      - core
+
+networks:
+  core:

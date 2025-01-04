@@ -1,0 +1,57 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.vls.tristar'
+version = '0.0.1-SNAPSHOT'
+
+ext {
+	appBaseName = 'chat-crawler'
+	appVerNo = '1.0'
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+bootJar {
+	archiveBaseName = "$appBaseName"
+	archiveVersion = null
+	exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+
+	manifest {
+		attributes "Implementation-Title": project.name,
+				"Implementation-Version": appVerNo,
+				"Build-By": System.getProperty('user.name'),
+				"Build-JDK": System.getProperty('java.version'),
+				"Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+	}
+}
