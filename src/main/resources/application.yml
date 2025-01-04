@@ -1,6 +1,4 @@
 spring:
-  main:
-    web-application-type: none
   application:
     name: chat-crawler
   data:
@@ -12,8 +10,13 @@ spring:
 tristar:
   chat:
     schedule:
-      rate: 5000
+      rate: 10000
     providers:
       telegram:
         url: https://api.telegram.org
         token: insert_token_here
+
+server:
+  port: 4141
+  servlet:
+    context-path: /api/chat-crawler

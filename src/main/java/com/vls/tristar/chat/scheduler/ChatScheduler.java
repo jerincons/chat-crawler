@@ -1,10 +1,10 @@
 package com.vls.tristar.chat.scheduler;
 
 import com.vls.tristar.chat.mapper.ChatMapper;
-import com.vls.tristar.chat.model.domain.ChatData;
+import com.vls.tristar.chat.model.domain.TelegramData;
 import com.vls.tristar.chat.model.telegram.GetUpdatesResponse;
 import com.vls.tristar.chat.model.telegram.Update;
-import com.vls.tristar.chat.service.ChatDataService;
+import com.vls.tristar.chat.service.TelegramDataService;
 import com.vls.tristar.chat.service.FileService;
 import com.vls.tristar.chat.service.TelegramService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class ChatScheduler {
 
     private final TelegramService telegramService;
     private final FileService fileService;
-    private final ChatDataService chatDataService;
+    private final TelegramDataService telegramDataService;
 
     @Scheduled(fixedRateString = "${tristar.chat.schedule.rate: 10000}")
     public void processTelegramChats() {
@@ -48,10 +48,10 @@ public class ChatScheduler {
             log.warn("updates are empty for processing");
             return;
         }
-        Set<ChatData> transformed = updates
+        Set<TelegramData> transformed = updates
                 .stream()
                 .parallel()
-                .map(ChatMapper::toChatData)
+                .map(ChatMapper::toTelegramData)
                 .collect(Collectors.toSet());
         CompletableFuture<Void> writeToFileTask = saveToFile(transformed);
         CompletableFuture<Void> writeToDbTask = saveToDB(transformed);
@@ -59,9 +59,9 @@ public class ChatScheduler {
     }
 
     @Async
-    private CompletableFuture<Void> saveToDB(Set<ChatData> chats) {
+    private CompletableFuture<Void> saveToDB(Set<TelegramData> chats) {
         try {
-            chatDataService.saveAllChats(chats);
+            telegramDataService.saveAllChats(chats);
         } catch (Exception e) {
             log.error("Failed to save chats to DB", e);
         }
@@ -69,13 +69,13 @@ public class ChatScheduler {
     }
 
     @Async
-    private CompletableFuture<Void> saveToFile(Set<ChatData> chats) {
+    private CompletableFuture<Void> saveToFile(Set<TelegramData> chats) {
         try {
-            Set<ChatData> existingChats = fileService.getAllChats();
-            Map<Long, ChatData> idChats = existingChats
+            Set<TelegramData> existingChats = fileService.getAllChats();
+            Map<Long, TelegramData> idChats = existingChats
                     .stream()
-                    .collect(Collectors.toMap(ChatData::getId, chatData -> chatData));
-            Set<ChatData> toBeSaved = chats
+                    .collect(Collectors.toMap(TelegramData::getId, chatData -> chatData));
+            Set<TelegramData> toBeSaved = chats
                     .stream()
                     .filter(chat -> !idChats.containsKey(chat.getId()))
                     .collect(Collectors.toSet());
@@ -83,7 +83,7 @@ public class ChatScheduler {
                 log.warn("No chats to be saved");
                 return CompletableFuture.completedFuture(null);
             }
-            Set<ChatData> finalData = new HashSet<>(existingChats);
+            Set<TelegramData> finalData = new HashSet<>(existingChats);
             finalData.addAll(toBeSaved);
             fileService.saveAllChats(finalData);
         } catch (Exception e) {
