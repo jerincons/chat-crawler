@@ -16,4 +16,4 @@ tristar:
     providers:
       telegram:
         url: https://api.telegram.org
-        token: 8006509352:AAGYD10GtCHKzGOXh4K6Si8yTOEsQbzbOoI
+        token: insert_token_here
