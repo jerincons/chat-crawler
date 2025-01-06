@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
     <property name="springAppName" value="${spring.application.name:-chat-crawler}" />
-    <springProperty scope="context" name="springAppVersion" source="spring.application.version"/>
+    <property name="springAppVersion" value="${spring.application.version:-1.0.0}" />
     <contextName>${springAppName}</contextName>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
-                <timestamp/>
+                <timestamp>
+                    <fieldName>timestamp</fieldName>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
                 <logLevel>
                     <fieldName>level</fieldName>
                 </logLevel>

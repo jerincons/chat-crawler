@@ -1,6 +1,8 @@
-package com.vls.tristar.chat.service;
+package com.vls.tristar.chat.service.api;
 
+import com.vls.tristar.chat.common.ErrorCode;
 import com.vls.tristar.chat.config.ChatConfig;
+import com.vls.tristar.chat.exception.ChatCrawlerException;
 import com.vls.tristar.chat.model.telegram.GetUpdatesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +29,12 @@ public class TelegramService {
                 .onStatus(HttpStatusCode::is4xxClientError,
                         res -> {
                             log.error("Received 4xx status {}", res);
-                            return Mono.error(new RuntimeException("4xx Error occurred"));
+                            return Mono.error(new ChatCrawlerException("4xx Error occurred", ErrorCode.GENERIC_ERROR));
                         })
                 .onStatus(HttpStatusCode::is5xxServerError,
                         res -> {
                             log.error("Received 5xx status {}", res);
-                            return Mono.error(new RuntimeException("5xx Error occurred"));
+                            return Mono.error(new ChatCrawlerException("5xx Error occurred", ErrorCode.GENERIC_ERROR));
                         })
                 .bodyToMono(GetUpdatesResponse.class)
                 .onErrorResume(e -> {

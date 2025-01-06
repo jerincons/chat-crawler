@@ -16,4 +16,8 @@ public class TelegramDataService {
     public void saveAllChats(Set<TelegramData> chats) {
         telegramDataRepository.saveAll(chats);
     }
+
+    public void save(TelegramData chat) {
+        telegramDataRepository.save(chat);
+    }
 }

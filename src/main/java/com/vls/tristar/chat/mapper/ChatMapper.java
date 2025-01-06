@@ -1,5 +1,7 @@
 package com.vls.tristar.chat.mapper;
 
+import com.vls.tristar.chat.common.ErrorCode;
+import com.vls.tristar.chat.exception.ChatCrawlerException;
 import com.vls.tristar.chat.model.domain.TelegramData;
 import com.vls.tristar.chat.model.domain.WhatsAppData;
 import com.vls.tristar.chat.model.telegram.Chat;
@@ -82,7 +84,9 @@ public class ChatMapper {
     }
 
     private static String extractWhatsAppMessageFrom(com.vls.tristar.chat.model.whatsapp.Message message) {
-        return message != null ? message.getFrom() : null;
+        return ofNullable(message)
+                .map(com.vls.tristar.chat.model.whatsapp.Message::getFrom)
+                .orElseThrow(() -> new ChatCrawlerException("Invalid from contact id", ErrorCode.WRONG_INPUT));
     }
 
     private static String extractWhatsAppMessageBody(com.vls.tristar.chat.model.whatsapp.Message message) {
@@ -97,7 +101,7 @@ public class ChatMapper {
                 .map(Change::getValue)
                 .map(Value::getMetadata)
                 .map(Metadata::getDisplayPhoneNumber)
-                .orElseThrow();
+                .orElseThrow(() -> new ChatCrawlerException("Invalid to contact id", ErrorCode.WRONG_INPUT));
     }
 
     public static WhatsAppData toWhatsAppData(String from, String to, String body, String messageSid) {
