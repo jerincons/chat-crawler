@@ -2,7 +2,7 @@ package com.vls.tristar.chat.scheduler;
 
 import com.vls.tristar.chat.common.ErrorCode;
 import com.vls.tristar.chat.exception.ChatCrawlerException;
-import com.vls.tristar.chat.mapper.ChatMapper;
+import com.vls.tristar.chat.mapper.TelegramMapper;
 import com.vls.tristar.chat.model.domain.TelegramData;
 import com.vls.tristar.chat.model.telegram.GetUpdatesResponse;
 import com.vls.tristar.chat.model.telegram.Update;
@@ -47,7 +47,7 @@ public class ChatScheduler {
         Set<TelegramData> chats = updates
                 .stream()
                 .parallel()
-                .map(ChatMapper::toTelegramData)
+                .map(TelegramMapper::toTelegramData)
                 .collect(Collectors.toSet());
         try {
             telegramDataService.saveAllChats(chats);

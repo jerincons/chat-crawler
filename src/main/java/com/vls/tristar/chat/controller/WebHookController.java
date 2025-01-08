@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.vls.tristar.chat.mapper.ChatMapper.toTelegramData;
-import static com.vls.tristar.chat.mapper.ChatMapper.toWhatsAppData;
+import static com.vls.tristar.chat.mapper.TelegramMapper.toTelegramData;
+import static com.vls.tristar.chat.mapper.WhatsAppMapper.toWhatsAppData;
 
 @Slf4j
 @RestController
