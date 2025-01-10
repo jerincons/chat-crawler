@@ -11,6 +11,7 @@ tristar:
   chat:
     schedule:
       rate: 10000
+      enabled: false
     providers:
       telegram:
         url: https://api.telegram.org

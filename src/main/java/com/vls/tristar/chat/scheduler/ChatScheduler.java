@@ -10,6 +10,7 @@ import com.vls.tristar.chat.service.TelegramDataService;
 import com.vls.tristar.chat.service.api.TelegramService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +26,25 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 public class ChatScheduler {
 
+    @Value("${tristar.chat.schedule.enabled:false}")
+    private boolean isChatSchedulerEnabled;
+
     private final TelegramService telegramService;
     private final TelegramDataService telegramDataService;
 
     @Scheduled(fixedRateString = "${tristar.chat.schedule.rate:10000}")
     public void processTelegramChats() {
-        log.info("Process started");
-        telegramService
-                .getChatUpdates()
-                .log()
-                .filter(Objects::nonNull)
-                .map(GetUpdatesResponse::getResult)
-                .subscribe(this::processUpdates);
+        if (isChatSchedulerEnabled) {
+            log.info("Process started");
+            telegramService
+                    .getChatUpdates()
+                    .log()
+                    .filter(Objects::nonNull)
+                    .map(GetUpdatesResponse::getResult)
+                    .subscribe(this::processUpdates);
+        } else {
+            log.info("The chat scheduler is disabled");
+        }
     }
 
     private void processUpdates(List<Update> updates) {
