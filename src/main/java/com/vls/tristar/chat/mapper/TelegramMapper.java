@@ -1,5 +1,7 @@
 package com.vls.tristar.chat.mapper;
 
+import com.vls.tristar.chat.common.ErrorCode;
+import com.vls.tristar.chat.exception.ChatCrawlerException;
 import com.vls.tristar.chat.model.domain.TelegramData;
 import com.vls.tristar.chat.model.telegram.Chat;
 import com.vls.tristar.chat.model.telegram.Message;
@@ -31,7 +33,9 @@ public class TelegramMapper {
     }
 
     private static long extractId(Update update) {
-        return ofNullable(update).map(Update::getUpdateId).orElse(-1L);
+        return ofNullable(update)
+                .map(Update::getUpdateId)
+                .orElseThrow(() -> new ChatCrawlerException("Invalid telegram update id", ErrorCode.WRONG_INPUT));
     }
 
     private static Message extractUpdateMessage(Update update) {
@@ -49,7 +53,7 @@ public class TelegramMapper {
         return ofNullable(update)
                 .map(TelegramMapper::extractUpdateMessage)
                 .map(Message::getMessageId)
-                .orElse(-1L);
+                .orElseThrow(() -> new ChatCrawlerException("Invalid telegram message id", ErrorCode.WRONG_INPUT));
     }
 
     private static long extractChatId(Update update) {
@@ -57,7 +61,7 @@ public class TelegramMapper {
                 .map(TelegramMapper::extractUpdateMessage)
                 .map(Message::getChat)
                 .map(Chat::getId)
-                .orElse(-1L);
+                .orElseThrow(() -> new ChatCrawlerException("Invalid telegram chat id", ErrorCode.WRONG_INPUT));
     }
 
     private static String extractType(Update update) {
@@ -73,7 +77,7 @@ public class TelegramMapper {
                 .map(TelegramMapper::extractUpdateMessage)
                 .map(Message::getFrom)
                 .map(User::getId)
-                .orElse(-1L);
+                .orElseThrow(() -> new ChatCrawlerException("Invalid telegram user id", ErrorCode.WRONG_INPUT));
     }
 
     private static String extractUsername(Update update) {

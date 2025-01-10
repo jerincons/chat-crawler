@@ -17,6 +17,5 @@ tristar:
         token: insert_token_here
 
 server:
-  port: 4141
   servlet:
     context-path: /api/chat-crawler

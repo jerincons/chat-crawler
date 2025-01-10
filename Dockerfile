@@ -13,7 +13,7 @@ ENV JMX_OPTS="-Dcom.sun.management.jmxremote \
 WORKDIR /app
 ADD build/libs/chat-crawler-*.jar ./$JAR_FILE
 
-EXPOSE 4141
+EXPOSE 8080
 
 ENTRYPOINT exec java $JAVA_OPTS $JMX_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app/$JAR_FILE
 
